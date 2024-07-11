@@ -14,7 +14,7 @@ search_terms = [
 def get_linkedin_profiles(company_name):
     profiles = []
     for term in search_terms:
-        query = f"{company_name} linkedin bhubaneshwar {term}"
+        query = f"{company_name} linkedin india {term}"
         search_results = list(search(query, num_results=3))  # Convert generator to list
 
         for result in search_results[:3]:  # Limit to top 3 results
