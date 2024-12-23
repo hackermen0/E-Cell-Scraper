@@ -4,10 +4,11 @@ from urllib import parse
 import re
 import time
 import csv
-import PyHunter
+
+# from pyhunter import PyHunter
 
 # Initialize PyHunter with your API key
-hunter = PyHunter("INSERT_YOUR_HUNTER_API_KEY_HERE")
+# hunter = PyHunter("INSERT_YOUR_HUNTER_API_KEY_HERE")
 
 search_terms = [
     "marketing head",
@@ -42,45 +43,45 @@ def get_linkedin_profiles(company_name):
                     )
                     profile_name = " ".join(filtered_profile_name).title()
                     print(profile_name)
-                    profiles.append((profile_name, result, term, "Not Found"))
+                    profiles.append((profile_name, term, result))
                     print(profile_name, result, term)
                     print("\n\n")
 
-                # Try to find email address using PyHunter
-                name_parts = profile_name.split()
-                first_name = name_parts[0]
-                last_name = " ".join(name_parts[1:2])
+                # # Try to find email address using PyHunter
+                # name_parts = profile_name.split()
+                # first_name = name_parts[0]
+                # last_name = " ".join(name_parts[1:2])
 
-                # Only try to find email if both last name and full name exist
-                if last_name and profile_name:
-                    try:
-                        email = hunter.email_finder(
-                            company=company_name,
-                            first_name=first_name,
-                            last_name=last_name,
-                        )
-                        if email:
-                            profiles[-1] = profiles[-1] + (
-                                email,
-                            )  # Append email to the tuple
-                        else:
-                            profiles[-1] = profiles[-1] + (
-                                "not found",
-                            )  # Mark email as not found
-                    except Exception as e:
-                        print(
-                            f"Error while fetching email for {profile_name}: {str(e)}"
-                        )
-                        profiles[-1] = profiles[-1] + (
-                            "not found",
-                        )  # Mark email as not found on error
+                # # Only try to find email if both last name and full name exist
+                # if last_name and profile_name:
+                #     try:
+                #         email = hunter.email_finder(
+                #             company=company_name,
+                #             first_name=first_name,
+                #             last_name=last_name,
+                #         )
+                #         if email:
+                #             profiles[-1] = profiles[-1] + (
+                #                 email,
+                #             )  # Append email to the tuple
+                #         else:
+                #             profiles[-1] = profiles[-1] + (
+                #                 "not found",
+                #             )  # Mark email as not found
+                #     except Exception as e:
+                #         print(
+                #             f"Error while fetching email for {profile_name}: {str(e)}"
+                #         )
+                #         profiles[-1] = profiles[-1] + (
+                #             "not found",
+                #         )  # Mark email as not found on error
 
     return profiles
 
 
 # Read the company names from input CSV
 input_file = "input_companies.csv"
-output_file = "linkedin_profiles_test.csv"
+output_file = "linkedin_profiles_test4.csv"
 
 with open(input_file, "r") as csvfile:
     reader = csv.reader(csvfile)
@@ -97,7 +98,7 @@ with open(input_file, "r") as csvfile:
     with open(output_file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(
-            ["Company Name", "Profile Name", "LinkedIn URL", "Role", "Email"]
+            ["Profile Name", "Company Name", "Role", "Email", "LinkedIn URL"]
         )
 
         for i, company in enumerate(companies):
@@ -105,11 +106,15 @@ with open(input_file, "r") as csvfile:
             for profile in profiles:
                 writer.writerow(
                     [
-                        company,
                         profile[0],
+                        company,
                         profile[1],
-                        profile[2],
-                        profile[3] if len(profile) > 3 else "",
+                        "",
+                        (
+                            f'=HYPERLINK("{profile[2]}", "Link")'
+                            if len(profile) > 2
+                            else ""
+                        ),
                     ]
                 )
 
