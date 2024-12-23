@@ -7,6 +7,7 @@ This script is designed to extract LinkedIn profiles for specific roles within c
 - Python 3.x
 - `googlesearch-python` package
 - `pyhunter` package
+- `pandas` package
 - A Hunter API Key
 
 ## Setup
